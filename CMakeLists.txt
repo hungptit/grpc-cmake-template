@@ -3,6 +3,7 @@ project(example-grpc LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Use local build gRPC and protobuf libraries
 set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3p")
 set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
 set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
@@ -14,10 +15,8 @@ message("gRPC_DIR: ${gRPC_DIR}")
 set(CMAKE_CXX_STANDARD 17)
 
 if (MSVC)
-  # warning level 4 and all warnings as errors
   add_compile_options(/W4 /WX)
 else()
-  # lots of warnings and all warnings as errors
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
 
