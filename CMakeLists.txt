@@ -12,6 +12,9 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(gRPC)
 
+#include directories
+include_directories("proto")
+
 # Add subdirectories
 add_subdirectory(proto)
 add_subdirectory(src)
