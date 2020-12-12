@@ -20,17 +20,17 @@ namespace std {
 } // namespace std
 
 int main(const int argc, const char *argv[]) {
-    const int      count       = argc > 1 ? std::atoi(argv[1]) : 1;
-    constexpr char ipaddress[] = "localhost:50051";
+    const int           count       = argc > 1 ? std::atoi(argv[1]) : 1;
+    constexpr char      ipaddress[] = "localhost:50051";
+    address::NameQuerry query;
+    address::Address    response;
+    query.set_name("John");
+    auto channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
+    auto stub    = address::AddressBook::NewStub(channel);
     for (int iter = 0; iter < count; ++iter) {
-        address::NameQuerry query;
-        address::Address    response;
-        query.set_name("John");
-        auto                channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
-        auto                stub    = address::AddressBook::NewStub(channel);
         grpc::ClientContext context;
         grpc::Status        status = stub->GetAddress(&context, query, &response);
-        std::cout << "response " << iter << ": " << response << "\n";
+        std::cout << "grpc-client: response " << iter << ": " << response << "\n";
     }
     return EXIT_SUCCESS;
 }

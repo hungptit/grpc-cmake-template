@@ -11,7 +11,7 @@ class AddressBookService final : public address::AddressBook::Service {
   public:
     virtual ::grpc::Status GetAddress(::grpc::ServerContext *, const ::address::NameQuerry *request,
                                       ::address::Address *response) {
-        std::cout << "Server: Query information for: " << std::quoted(request->name()) << "\n";
+        std::cout << "grpc-server: username: " << std::quoted(request->name()) << "\n";
         response->set_name("John Doe");
         response->set_zip("12345");
         response->set_country("USA");
