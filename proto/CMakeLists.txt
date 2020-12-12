@@ -1,5 +1,5 @@
-find_package(protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
+find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(Threads)
 
 # Protobuf/Grpc source files
