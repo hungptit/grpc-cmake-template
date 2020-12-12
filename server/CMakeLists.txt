@@ -1,4 +1,4 @@
 find_package(Threads)
-set(SRC_FILES server.cpp)
-add_executable(server ${SRC_FILES})
-target_link_libraries(server PRIVATE address)
+set(SRC_FILE grpc-server)
+add_executable(${SRC_FILE} ${SRC_FILE}.cpp)
+target_link_libraries(${SRC_FILE} PRIVATE address)

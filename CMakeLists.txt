@@ -21,6 +21,7 @@ else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
 
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -44,7 +45,7 @@ add_custom_command(
   COMMENT "Format C++ files with clang-format."
   VERBATIM)
 
-file(GLOB CMAKE_FILES CMakeLists.txt client/CMakeLists.txt
+file(GLOB CMAKE_FILES CMakeLists.txt client/CMakeLists.txt proto/CMakeLists.txt
      server/CMakeLists.txt)
 find_program(CMAKE_FORMAT NAMES cmake-format)
 if(${CMAKE_FORMAT} STREQUAL "CMAKE_FORMAT-NOTFOUND")
