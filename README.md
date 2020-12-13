@@ -1,6 +1,6 @@
 # Introduction #
 
-This repository is a C++ CMake template for projects that use [gRPC](https://github.com/grpc/grpc). 
+This repository is a CMake template for my C++ projects that use [gRPC](https://github.com/grpc/grpc). 
 
 # Build instruction #
 
