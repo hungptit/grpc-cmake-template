@@ -8,11 +8,10 @@ This repository is a CMake template for my C++ projects that use [gRPC](https://
 
 ### Build gRPC ###
 
+Run below command at the root level of the project
+
 ``` shell
-git submodule --init
-git submodule --update
-cd 3p
-./build_using_cmake.sh 3p
+./build_all.sh
 ```
 
 ### Build client and server examples ###
@@ -21,6 +20,12 @@ cd 3p
 cmake ./
 make
 ```
+Try below commands if you want to alter the C++ compiler and build mode
+``` shell
+cmake ./ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
+make -k
+```
+
 
 Below is the sample output obtained using my Linux box
 
