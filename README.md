@@ -18,7 +18,7 @@ Run below command at the root level of the project
 
 ``` shell
 cmake ./
-make
+make -k
 ```
 Try below commands if you want to alter the C++ compiler and build mode
 ``` shell
