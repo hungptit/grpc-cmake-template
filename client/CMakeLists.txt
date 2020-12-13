@@ -1,4 +1,7 @@
 find_package(Threads)
-set(SRC_FILE grpc-client)
-add_executable(${SRC_FILE} ${SRC_FILE}.cpp)
-target_link_libraries(${SRC_FILE} PRIVATE address)
+set(SRC_FILES grpc-client)
+
+foreach(src_file ${SRC_FILES})
+  add_executable(${src_file} ${src_file}.cpp)
+  target_link_libraries(${src_file} PRIVATE address)
+endforeach(src_file)

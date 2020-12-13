@@ -20,7 +20,7 @@ else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
 
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -32,7 +32,7 @@ add_subdirectory(proto)
 
 # Formating and linting all related files
 file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp server/*.h)
-message(${SRCS_AND_HDRS})
+message("C++ files: ${SRCS_AND_HDRS}")
 
 # list(FILTER SRCS_AND_HDRS EXCLUDE REGEX "3p/")
 find_program(CLANG_FORMAT NAMES clang-format)
