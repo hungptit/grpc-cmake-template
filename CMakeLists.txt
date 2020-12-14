@@ -106,12 +106,21 @@ add_custom_target(
   DEPENDS .fmt_bash_stamp .fmt_cpp_stamp .fmt_cmake_stamp
   COMMENT "Format Bash, C++, and CMake files.")
 
-add_custom_command(
-  OUTPUT .lint_shellcheck_stamp
-  DEPENDS ${SH_SRCS}
-  COMMAND shellcheck ${SH_SRCS}
-  COMMAND touch .lint_shellcheck_stamp
-  COMMENT "Lint Bash files with shellcheck.")
+if(NOT MSVC)
+  add_custom_command(
+    OUTPUT .lint_shellcheck_stamp
+    DEPENDS ${SH_SRCS}
+    COMMAND shellcheck ${SH_SRCS}
+    COMMAND touch .lint_shellcheck_stamp
+    COMMENT "Lint Bash files with shellcheck.")
+else()
+  add_custom_command(
+    OUTPUT .lint_shellcheck_stamp
+    DEPENDS ${SH_SRCS}
+    COMMAND touch .lint_shellcheck_stamp
+    COMMENT "Skip linting Bash scripts."
+    VERBATIM)
+endif()
 
 add_custom_command(
   OUTPUT .lint_cmake_stamp
