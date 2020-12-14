@@ -5,7 +5,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Use local build gRPC and protobuf libraries
 set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3p")
-set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
+if(UNIX AND NOT APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
+elseif(APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib/cmake/protobuf/")
+elseif(MSVC)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib/cmake/protobuf/")
+else()
+  message(FATAL_ERROR "This platform is unsupported. CMake will exit.")
+endif()
+
 set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
 
 message("protobuf_DIR: ${protobuf_DIR}")

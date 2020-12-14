@@ -1,4 +1,8 @@
 #!/bin/bash
+
+git submodule init
+git submodule update
+
 pushd 3p || exit
 
 # Update grpc
