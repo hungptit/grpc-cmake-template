@@ -16,7 +16,10 @@ cd $grpc_path
 git submodule update --init
 
 # Build grpc
-cmake -G "Visual Studio 14 2015 Win64" . -DABSL_ENABLE_INSTALL=OFF -DCMAKE_INSTALL_PREFIX="$third_party_path" -DgRPC_PROTOBUF_PACKAGE_TYPE=MODULE
+cd $root_path
+mkdir build
+cd build
+cmake -G "Visual Studio 14 2015 Win64" $grpc_path -DABSL_ENABLE_INSTALL=OFF -DCMAKE_INSTALL_PREFIX="$third_party_path" -DgRPC_PROTOBUF_PACKAGE_TYPE=MODULE -DgRPC_PROTOBUF_PROVIDER=module
 cmake --build . --config $config -- /maxcpucount
 cmake --build . --config $config --target install
 
