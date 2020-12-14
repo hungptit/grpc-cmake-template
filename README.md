@@ -118,3 +118,11 @@ make[1]: Leaving directory '/home/hungptit/working/grpc-cmake-template'
 ```
 
 ## Windows ##
+
+Run below command at the root level 
+
+``` powershell
+./build_all.ps1
+```
+
+
