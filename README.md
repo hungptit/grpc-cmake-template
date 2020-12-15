@@ -34,7 +34,7 @@ make -k
 
 ## Windows ##
 
-Go to the root level of the template folder then execute below commands to build grpc and examples in `Release` mode assuming the Visual Studio version >= 15 installed.
+Go to the root level of the template folder then execute below commands to build grpc and examples in `Release` mode assuming the Visual Studio version >= 14 installed.
 
 ``` powershell
 ./build_all.ps1 Release
