@@ -14,3 +14,7 @@ popd || exit
 ./build_using_cmake.sh grpc -DABSL_ENABLE_INSTALL=OFF -DgRPC_PROTOBUF_PACKAGE_TYPE=module -DgRPC_PROTOBUF_PROVIDER=module
 
 popd || exit
+
+# Build all examples
+cmake ./
+make -k
