@@ -23,7 +23,7 @@ message("gRPC_DIR: ${gRPC_DIR}")
 # Configure compiler options
 set(CMAKE_CXX_STANDARD 17)
 
-if (MSVC)
+if(MSVC)
   # add_compile_options(/W4 /WX)
 else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
@@ -40,7 +40,7 @@ add_subdirectory(server)
 add_subdirectory(proto)
 
 # Formating and linting all related files
-file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp server/*.h)
+file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp server/*.cpp)
 message("C++ files: ${SRCS_AND_HDRS}")
 
 # list(FILTER SRCS_AND_HDRS EXCLUDE REGEX "3p/")
