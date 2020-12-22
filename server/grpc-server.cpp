@@ -3,6 +3,7 @@
 
 #include "grpc/grpc.h"
 #include "grpcpp/server_builder.h"
+#include <grpcpp/health_check_service_interface.h>
 
 #include <iomanip>
 #include <iostream>
@@ -20,7 +21,10 @@ class AddressBookService final : public address::AddressBook::Service {
 };
 
 int main() {
-    constexpr char      ipaddress[] = "0.0.0.0:50051";
+    constexpr char ipaddress[] = "0.0.0.0:50051";
+
+    grpc::EnableDefaultHealthCheckService(true);
+
     grpc::ServerBuilder builder;
     builder.AddListeningPort(ipaddress, grpc::InsecureServerCredentials());
     AddressBookService my_service;
