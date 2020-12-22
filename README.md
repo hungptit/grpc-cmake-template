@@ -2,6 +2,12 @@
 
 This repository is a CMake template for my C++ projects that use [gRPC](https://github.com/grpc/grpc). 
 
+Below are main gRPC features that are used in the examples:
+1. Making a gRPC request from the client.
+2. Handling handle client requests at the grpc server
+3. Setting the deadline when making a request.
+4. Monitoring the gRPC server status using the health check.
+
 # Build instruction #
 
 **Note: This instruction assumes there is a recent C++ toolchain in the build machine.**
@@ -16,9 +22,9 @@ Run below command at the root level of the project to build [grpc](https://githu
 ./build_all.sh
 ```
 
-### Build client and server examples ###
+### Build all examples ###
 
-Try below steps if you want to build the client and server examples without rebuilding the [grpc](https://github.com/grpc/grpc) libraries.
+Try below steps if you want to build all examples assuming the [grpc](https://github.com/grpc/grpc) libraries have already installed in the **3p** folder.
 
 ``` shell
 cmake ./
