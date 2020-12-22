@@ -39,7 +39,8 @@ void request(const std::string &username, const int count) {
         grpc::ClientContext context;
         context.set_deadline(deadline);
         grpc::Status status = stub->GetAddress(&context, query, &response);
-        std::cout << "grpc-client: response " << iter << ": " << response << "\n";
+        std::cout << "grpc-client: request: {" << query.ShortDebugString() << "}\n";
+        std::cout << "grpc-client: response: {" << response.ShortDebugString() << "}\n";
     }
 }
 
