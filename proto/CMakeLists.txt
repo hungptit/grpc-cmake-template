@@ -2,7 +2,7 @@ find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(Threads)
 
-set(PROTO_FILES address.proto addressbook.proto)
+set(PROTO_FILES address.proto addressbook.proto healthcheck.proto)
 
 # Add Library target with protobuf sources
 add_library(address ${PROTO_FILES})

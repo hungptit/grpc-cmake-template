@@ -1,6 +1,4 @@
-#include "addressbook.pb.h"
-#include "proto/address.pb.h"
-#include "proto/addressbook.grpc.pb.h"
+#include "healthcheck.pb.h"
 
 #include <cstdlib>
 #include <grpc/grpc.h>
@@ -11,16 +9,16 @@
 #include <ostream>
 
 void check(const std::string &service_name, const int count = 1) {
-    using address::HealthCheckResponse;
+    using monitor::HealthCheckResponse;
 
     constexpr char ipaddress[] = "localhost:50051";
 
-    address::HealthCheckRequest query;
+    monitor::HealthCheckRequest query;
     query.set_service(service_name);
 
-    address::HealthCheckResponse response;
+    monitor::HealthCheckResponse response;
     auto                         channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
-    auto                         stub    = address::Health::NewStub(channel);
+    auto                         stub    = monitor::Health::NewStub(channel);
     for (int iter = 0; iter < count; ++iter) {
         grpc::ClientContext context;
         grpc::Status        status = stub->Check(&context, query, &response);
