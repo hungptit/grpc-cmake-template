@@ -1,5 +1,5 @@
 find_package(Threads)
-set(SRC_FILES grpc-client)
+set(SRC_FILES grpc-client health-check)
 
 foreach(src_file ${SRC_FILES})
   add_executable(${src_file} ${src_file}.cpp)

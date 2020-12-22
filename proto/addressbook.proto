@@ -11,3 +11,4 @@ message NameQuerry {
 service AddressBook {
     rpc GetAddress(NameQuerry) returns (Address) {}
 }
+

@@ -3,6 +3,8 @@
 
 #include "grpc/grpc.h"
 #include "grpcpp/server_builder.h"
+#include <cassert>
+#include <grpcpp/health_check_service_interface.h>
 
 #include <iomanip>
 #include <iostream>
@@ -20,12 +22,18 @@ class AddressBookService final : public address::AddressBook::Service {
 };
 
 int main() {
-    constexpr char      ipaddress[] = "0.0.0.0:50051";
+    constexpr char ipaddress[] = "localhost:50051";
+
+    // Enable the default health check service
+    grpc::EnableDefaultHealthCheckService(true);
+    assert(grpc::DefaultHealthCheckServiceEnabled());
+
     grpc::ServerBuilder builder;
     builder.AddListeningPort(ipaddress, grpc::InsecureServerCredentials());
     AddressBookService my_service;
     builder.RegisterService(&my_service);
     auto server(builder.BuildAndStart());
+    std::cout << "Listening at " << ipaddress << "\n";
     server->Wait();
     return 0;
 }
