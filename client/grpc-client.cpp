@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <ostream>
+#include <thread>
 
 namespace std {
     ostream &operator<<(ostream &os, const address::Address &address) {
@@ -24,11 +25,20 @@ void request(const std::string &username, const int count) {
     address::NameQuerry query;
     address::Address    response;
     query.set_name(username);
+
     auto channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
     auto stub    = address::AddressBook::NewStub(channel);
+
+    constexpr std::chrono::milliseconds sleep_time(1);
+
     for (int iter = 0; iter < count; ++iter) {
+        std::this_thread::sleep_for(sleep_time);
+
+        const std::chrono::system_clock::time_point deadline =
+            std::chrono::system_clock::now() + std::chrono::milliseconds(1000);
         grpc::ClientContext context;
-        grpc::Status        status = stub->GetAddress(&context, query, &response);
+        context.set_deadline(deadline);
+        grpc::Status status = stub->GetAddress(&context, query, &response);
         std::cout << "grpc-client: response " << iter << ": " << response << "\n";
     }
 }
