@@ -54,8 +54,13 @@ void check(const std::string &service_name, const int count = 1) {
 }
 
 int main(const int argc, const char *argv[]) {
-    for (auto idx = 1; idx < argc; ++idx) {
-        check(std::string(argv[idx]), 1);
+    if (argc > 1) {
+        for (auto idx = 1; idx < argc; ++idx) {
+            check(std::string(argv[idx]), 1);
+        }
+    } else {
+        check("", 10);
     }
+
     return EXIT_SUCCESS;
 }
