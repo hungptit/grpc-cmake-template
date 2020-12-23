@@ -11,9 +11,7 @@ Write-Output "third_party_path: $third_party_path"
 Write-Output "grpc_path: $grpc_path"
 
 # Init grpc and its submodules
-git submodule update --init
-cd $grpc_path
-git submodule update --init
+git submodule update --init --recursive
 
 # Build grpc
 cd $root_path
