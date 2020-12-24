@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
-project(example-grpc LANGUAGES CXX)
+project(grpc-cmake-template LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include(3p/src/cmake-scripts/sanitizers.cmake)
 
 # Use local build gRPC and protobuf libraries
 set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3p")
@@ -24,7 +26,7 @@ message("gRPC_DIR: ${gRPC_DIR}")
 set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
-  # add_compile_options(/W4 /WX)
+  add_compile_options(/W3 /WX)
 else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()

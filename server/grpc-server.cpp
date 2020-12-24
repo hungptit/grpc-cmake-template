@@ -8,6 +8,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <thread>
 
 class AddressBookService final : public address::AddressBook::Service {
   public:
@@ -31,6 +32,11 @@ int main() {
     grpc::ServerBuilder builder;
     builder.AddListeningPort(ipaddress, grpc::InsecureServerCredentials());
     AddressBookService my_service;
+
+    // Delay the startup by sleep_time miliseconds to simulate the gRPC server startup time in production.
+    constexpr std::chrono::milliseconds sleep_time(1000);
+    std::this_thread::sleep_for(sleep_time);
+
     builder.RegisterService(&my_service);
     auto server(builder.BuildAndStart());
     std::cout << "Listening at " << ipaddress << "\n";

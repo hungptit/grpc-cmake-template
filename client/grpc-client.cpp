@@ -10,6 +10,8 @@
 #include <ostream>
 #include <thread>
 
+#include "utilities.h"
+
 namespace std {
     ostream &operator<<(ostream &os, const address::Address &address) {
         os << "{" << std::quoted("name") << ":" << std::quoted(address.name()) << "," << std::quoted("street") << ":"
@@ -29,7 +31,16 @@ void request(const std::string &username, const int count) {
     auto channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
     auto stub    = address::AddressBook::NewStub(channel);
 
+    constexpr int polling_interval = 200;
+    if (!utils::is_available(ipaddress, 10, polling_interval)) {
+        std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
+        return;
+    }
+
+    std::cout << "The gRPC server is available\n";
+
     constexpr std::chrono::milliseconds sleep_time(1);
+    constexpr std::chrono::milliseconds request_delay(1);
 
     for (int iter = 0; iter < count; ++iter) {
         std::this_thread::sleep_for(sleep_time);
@@ -39,8 +50,11 @@ void request(const std::string &username, const int count) {
         grpc::ClientContext context;
         context.set_deadline(deadline);
         grpc::Status status = stub->GetAddress(&context, query, &response);
-        std::cout << "grpc-client: request: {" << query.ShortDebugString() << "}\n";
-        std::cout << "grpc-client: response: {" << response.ShortDebugString() << "}\n";
+        if (!status.ok()) {
+            std::cout << "grpc-client: request: {" << query.ShortDebugString() << "}\n";
+            std::cout << "grpc-client: response: {" << response.ShortDebugString() << "}\n";
+        }
+        std::cout << "grpc-client: response: " << response << "\n";
     }
 }
 
