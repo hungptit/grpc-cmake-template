@@ -32,7 +32,7 @@ void request(const std::string &username, const int count) {
     auto stub    = address::AddressBook::NewStub(channel);
 
     constexpr int polling_interval = 200;
-    if (!utils::is_available(ipaddress, 10, polling_interval)) {
+    if (!utils::is_available(channel, 10, polling_interval)) {
         std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
         return;
     }

@@ -2,6 +2,7 @@
 
 #include "healthcheck.grpc.pb.h"
 #include "healthcheck.pb.h"
+#include <grpcpp/channel.h>
 #include <grpcpp/create_channel.h>
 #include <iostream>
 #include <thread>
@@ -22,7 +23,7 @@ namespace utils {
         }
     }
 
-    bool is_available(const std::string &address, const int ntries, const int miliseconds) {
+    bool is_available(std::shared_ptr<grpc::Channel> channel, const int ntries, const int miliseconds) {
         using grpc::health::v1::HealthCheckRequest;
         using grpc::health::v1::HealthCheckResponse;
 
@@ -32,12 +33,9 @@ namespace utils {
         HealthCheckRequest query;
         query.set_service(service_name);
         HealthCheckResponse response;
-
-        auto channel = grpc::CreateChannel(address, grpc::InsecureChannelCredentials());
         auto stub    = grpc::health::v1::Health::NewStub(channel);
 
         for (int iter = 0; iter < ntries; ++iter) {
-            std::this_thread::sleep_for(sleep_time);
             const std::chrono::system_clock::time_point deadline =
                 std::chrono::system_clock::now() + std::chrono::milliseconds(1000);
             grpc::ClientContext context;
