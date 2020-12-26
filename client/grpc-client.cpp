@@ -52,8 +52,9 @@ void request(const std::string &username, const int count) {
         grpc::Status status = stub->GetAddress(&context, query, &response);
         if (!status.ok()) {
             std::cerr << "grpc-client: {" << status.error_message() << "}\n";
+        } else {
+            std::cout << "grpc-client: response: " << response << "\n";
         }
-        std::cout << "grpc-client: response: " << response << "\n";
     }
 }
 
