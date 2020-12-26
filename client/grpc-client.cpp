@@ -34,13 +34,11 @@ void request(const std::string &username, const int count) {
     constexpr int polling_interval = 200;
     auto const    status           = utils::get_grpc_health_status(channel, count, polling_interval);
     if (status.is_available()) {
-        std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
-        return;
+        std::cout << "The gRPC server is serving at " << std::quoted(ipaddress) << "\n";
     } else {
-        std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
+        std::cerr << "Cannot connect to the gRPC server at " << std::quoted(ipaddress) << "\n";
+        return;
     }
-
-    std::cout << "The gRPC server is available\n";
 
     constexpr std::chrono::milliseconds sleep_time(1);
 
@@ -53,7 +51,7 @@ void request(const std::string &username, const int count) {
         response.Clear();
         grpc::Status status = stub->GetAddress(&context, query, &response);
         if (!status.ok()) {
-            std::cout << "grpc-client: {" << status.error_message() << "}\n";
+            std::cerr << "grpc-client: {" << status.error_message() << "}\n";
         }
         std::cout << "grpc-client: response: " << response << "\n";
     }
