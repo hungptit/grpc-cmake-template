@@ -1,3 +1,6 @@
 [submodule "3p/src/grpc"]
 	path = 3p/src/grpc
 	url = https://github.com/grpc/grpc.git
+[submodule "3p/src/cmake-scripts"]
+	path = 3p/src/cmake-scripts
+	url = https://github.com/StableCoder/cmake-scripts.git

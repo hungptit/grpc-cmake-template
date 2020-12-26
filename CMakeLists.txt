@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(3p/src/cmake-scripts/sanitizers.cmake)
 
-# Use local build gRPC and protobuf libraries
+#Use local build gRPC and protobuf libraries
 set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3p")
 if(UNIX AND NOT APPLE)
   set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
@@ -22,7 +22,7 @@ set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
 message("protobuf_DIR: ${protobuf_DIR}")
 message("gRPC_DIR: ${gRPC_DIR}")
 
-# Configure compiler options
+#Configure compiler options
 set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
@@ -33,16 +33,16 @@ endif()
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-# Add include folders
+#Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-# Include subfolders
+#Include subfolders
 add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(proto)
 
-# Formating and linting all related files
-file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp server/*.cpp)
+#Formating and linting all related files
+file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp)
 message("C++ files: ${SRCS_AND_HDRS}")
 
 # list(FILTER SRCS_AND_HDRS EXCLUDE REGEX "3p/")

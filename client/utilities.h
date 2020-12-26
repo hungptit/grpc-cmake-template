@@ -4,6 +4,7 @@
 #include "healthcheck.pb.h"
 #include <grpcpp/channel.h>
 #include <grpcpp/create_channel.h>
+#include <grpcpp/impl/codegen/status_code_enum.h>
 #include <iostream>
 #include <thread>
 
@@ -23,32 +24,53 @@ namespace utils {
         }
     }
 
-    bool is_available(std::shared_ptr<grpc::Channel> channel, const int ntries, const int miliseconds) {
+    struct GRPCHealthInfo {
+        grpc::StatusCode                                    errcode = grpc::StatusCode::UNKNOWN;
+        grpc::health::v1::HealthCheckResponse_ServingStatus status =
+            grpc::health::v1::HealthCheckResponse_ServingStatus::HealthCheckResponse_ServingStatus_UNKNOWN;
+
+        bool is_available() const {
+            return (errcode == grpc::OK) &&
+                   (status ==
+                    grpc::health::v1::HealthCheckResponse_ServingStatus::HealthCheckResponse_ServingStatus_SERVING);
+        }
+    };
+
+    GRPCHealthInfo get_grpc_health_status(std::shared_ptr<grpc::Channel> channel, const int ntries,
+                                          const int miliseconds) {
         using grpc::health::v1::HealthCheckRequest;
         using grpc::health::v1::HealthCheckResponse;
+        using std::chrono::milliseconds;
 
-        const std::chrono::milliseconds sleep_time(miliseconds);
-        const std::string service_name = {""};
+        GRPCHealthInfo results = {};
+
+        const milliseconds sleep_time(miliseconds);
+        const std::string  service_name = "";
 
         HealthCheckRequest query;
         query.set_service(service_name);
         HealthCheckResponse response;
-        auto stub    = grpc::health::v1::Health::NewStub(channel);
+
+        auto stub = grpc::health::v1::Health::NewStub(channel);
 
         for (int iter = 0; iter < ntries; ++iter) {
             const std::chrono::system_clock::time_point deadline =
-                std::chrono::system_clock::now() + std::chrono::milliseconds(1000);
+                std::chrono::system_clock::now() + milliseconds(1000);
             grpc::ClientContext context;
             context.set_deadline(deadline);
-            grpc::Status status = stub->Check(&context, query, &response);
+            response.Clear(); // Reset the response
+            auto const status = stub->Check(&context, query, &response);
             if (status.ok()) {
-                std::cout << "health-check: request: {" << query.ShortDebugString() << "}\n";
-                std::cout << "health-check: response: {" << response.ShortDebugString() << "}\n";
-                return true;
+                if (response.status() == grpc::health::v1::HealthCheckResponse_ServingStatus_SERVING) {
+                    return {status.error_code(), response.status()};
+                }
             }
-            std::cout << "errcode: " << errcode2string(status.error_code()) << "\n";
+
+            const auto errcode = status.error_code();
+            std::cout << utils::errcode2string(errcode) << ": " << status.error_message() << "\n";
+            results = {errcode, response.status()};
         }
 
-        return false;
+        return results;
     }
 } // namespace utils

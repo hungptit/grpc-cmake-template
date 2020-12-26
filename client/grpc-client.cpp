@@ -32,27 +32,28 @@ void request(const std::string &username, const int count) {
     auto stub    = address::AddressBook::NewStub(channel);
 
     constexpr int polling_interval = 200;
-    if (!utils::is_available(channel, 10, polling_interval)) {
+    auto const    status           = utils::get_grpc_health_status(channel, count, polling_interval);
+    if (status.is_available()) {
         std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
         return;
+    } else {
+        std::cerr << "Cannot connect to the gRPC server at the address: " << ipaddress << "\n";
     }
 
     std::cout << "The gRPC server is available\n";
 
     constexpr std::chrono::milliseconds sleep_time(1);
-    constexpr std::chrono::milliseconds request_delay(1);
 
     for (int iter = 0; iter < count; ++iter) {
         std::this_thread::sleep_for(sleep_time);
-
         const std::chrono::system_clock::time_point deadline =
             std::chrono::system_clock::now() + std::chrono::milliseconds(1000);
         grpc::ClientContext context;
         context.set_deadline(deadline);
+        response.Clear();
         grpc::Status status = stub->GetAddress(&context, query, &response);
         if (!status.ok()) {
-            std::cout << "grpc-client: request: {" << query.ShortDebugString() << "}\n";
-            std::cout << "grpc-client: response: {" << response.ShortDebugString() << "}\n";
+            std::cout << "grpc-client: {" << status.error_message() << "}\n";
         }
         std::cout << "grpc-client: response: " << response << "\n";
     }
