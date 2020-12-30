@@ -6,6 +6,8 @@
 #include <grpcpp/create_channel.h>
 #include <grpcpp/impl/codegen/status_code_enum.h>
 #include <iostream>
+#include <quill/Quill.h>
+#include <quill/detail/LogMacros.h>
 #include <thread>
 
 namespace utils {
@@ -45,7 +47,7 @@ namespace utils {
         GRPCHealthInfo results = {};
 
         const milliseconds sleep_time(miliseconds);
-        const std::string  service_name = "";
+        const std::string  service_name = "address";
 
         HealthCheckRequest query;
         query.set_service(service_name);
@@ -67,7 +69,8 @@ namespace utils {
             }
 
             const auto errcode = status.error_code();
-            std::cout << utils::errcode2string(errcode) << ": " << status.error_message() << "\n";
+            auto       logger  = quill::get_logger();
+            LOG_ERROR(logger, "{0}: {1}", utils::errcode2string(errcode), status.error_message());
             results = {errcode, response.status()};
         }
 

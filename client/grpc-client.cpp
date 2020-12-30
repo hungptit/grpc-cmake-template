@@ -26,6 +26,7 @@ namespace std {
 } // namespace std
 
 void request(const std::string &username, const int count) {
+
     constexpr char      ipaddress[] = "localhost:50051";
     address::NameQuerry query;
     address::Address    response;
@@ -34,32 +35,27 @@ void request(const std::string &username, const int count) {
     auto channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
     auto stub    = address::AddressBook::NewStub(channel);
 
-    
+    auto          logger           = quill::get_logger();
     constexpr int polling_interval = 200;
     auto const    status           = utils::get_grpc_health_status(channel, count, polling_interval);
-
-    // auto logger = quill::get_logger();
     if (status.is_available()) {
-        // LOG_INFO(logger, "The gRPC server is serving at \"{0}\"\n", ipaddress);
+        LOG_INFO(logger, "The gRPC server is serving at \"{0}\"", ipaddress);
     } else {
-        // LOG_ERROR(logger, "Cannot connect to the gRPC server at \"{0}\"\n", ipaddress);
+        LOG_ERROR(logger, "Cannot connect to the gRPC server at \"{0}\"", ipaddress);
         return;
     }
 
-    constexpr std::chrono::milliseconds sleep_time(1);
-
     for (int iter = 0; iter < count; ++iter) {
-        std::this_thread::sleep_for(sleep_time);
         const std::chrono::system_clock::time_point deadline =
             std::chrono::system_clock::now() + std::chrono::milliseconds(1000);
         grpc::ClientContext context;
         context.set_deadline(deadline);
         response.Clear();
-        grpc::Status status = stub->GetAddress(&context, query, &response);
+        const grpc::Status status = stub->GetAddress(&context, query, &response);
         if (!status.ok()) {
-            std::cerr << "grpc-client: {" << status.error_message() << "}\n";
+            LOG_ERROR(logger, "{}", status.error_message());
         } else {
-            std::cout << "grpc-client: response: " << response << "\n";
+            LOG_INFO(logger, "{}", response.ShortDebugString());
         }
     }
 }
@@ -68,7 +64,7 @@ int main(const int argc, const char *argv[]) {
     quill::enable_console_colours();
     quill::start();
     LOG_INFO(quill::get_logger(), "grpc-client");
-    
+
     const int count = argc > 1 ? std::atoi(argv[1]) : 1;
     request("John", count);
     return EXIT_SUCCESS;

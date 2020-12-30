@@ -3,5 +3,5 @@ set(SRC_FILES grpc-server)
 
 foreach(src_file ${SRC_FILES})
   add_executable(${src_file} ${src_file}.cpp)
-  target_link_libraries(${src_file} PRIVATE address)
+  target_link_libraries(${src_file} PRIVATE address quill::quill)
 endforeach(src_file)

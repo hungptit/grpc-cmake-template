@@ -35,6 +35,8 @@ else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
 
+
+
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #Add include folders

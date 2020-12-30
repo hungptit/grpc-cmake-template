@@ -21,6 +21,8 @@ cmake -G "Visual Studio 14 2015" -A x64 $grpc_path -DABSL_ENABLE_INSTALL=OFF -DC
 cmake --build . --config $config -- /maxcpucount
 cmake --build . --config $config --target install
 
+# TODO: Build quill
+
 # Build examples
 cd $root_path
 cmake -G "Visual Studio 14 2015"  -A x64 .
