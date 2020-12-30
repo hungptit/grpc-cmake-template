@@ -46,7 +46,7 @@ int main() {
     builder.RegisterService(&my_service);
     auto server(builder.BuildAndStart());
 
-    // Set the status of the serving service
+    // Enable address.AddressBook service and disable the default healthcheck service.
     auto *health_check_service = server->GetHealthCheckService();
     health_check_service->SetServingStatus("", false);
     health_check_service->SetServingStatus("address.AddressBook", true);
