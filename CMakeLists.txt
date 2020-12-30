@@ -5,6 +5,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(3p/src/cmake-scripts/sanitizers.cmake)
 
+include(3p/src/cmake-scripts/sanitizers.cmake)
+include(3p/lib64/cmake/quill/quill-config.cmake)
+
+
 #Use local build gRPC and protobuf libraries
 set(EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3p")
 if(UNIX AND NOT APPLE)

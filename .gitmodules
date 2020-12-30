@@ -4,3 +4,7 @@
 [submodule "3p/src/cmake-scripts"]
 	path = 3p/src/cmake-scripts
 	url = https://github.com/StableCoder/cmake-scripts.git
+[submodule "3p/src/quill"]
+	path = 3p/src/quill
+	url = https://github.com/odygrd/quill.git
+	branch = master

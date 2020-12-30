@@ -1,6 +1,8 @@
 #include "proto/address.pb.h"
 #include "proto/addressbook.grpc.pb.h"
 
+#include "quill/Quill.h"
+
 #include <cstdlib>
 #include <grpc/grpc.h>
 #include <grpcpp/create_channel.h>
@@ -8,6 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <ostream>
+#include <quill/detail/LogMacros.h>
 #include <thread>
 
 #include "utilities.h"
@@ -31,12 +34,15 @@ void request(const std::string &username, const int count) {
     auto channel = grpc::CreateChannel(ipaddress, grpc::InsecureChannelCredentials());
     auto stub    = address::AddressBook::NewStub(channel);
 
+    
     constexpr int polling_interval = 200;
     auto const    status           = utils::get_grpc_health_status(channel, count, polling_interval);
+
+    // auto logger = quill::get_logger();
     if (status.is_available()) {
-        std::cout << "The gRPC server is serving at " << std::quoted(ipaddress) << "\n";
+        // LOG_INFO(logger, "The gRPC server is serving at \"{0}\"\n", ipaddress);
     } else {
-        std::cerr << "Cannot connect to the gRPC server at " << std::quoted(ipaddress) << "\n";
+        // LOG_ERROR(logger, "Cannot connect to the gRPC server at \"{0}\"\n", ipaddress);
         return;
     }
 
@@ -59,6 +65,10 @@ void request(const std::string &username, const int count) {
 }
 
 int main(const int argc, const char *argv[]) {
+    quill::enable_console_colours();
+    quill::start();
+    LOG_INFO(quill::get_logger(), "grpc-client");
+    
     const int count = argc > 1 ? std::atoi(argv[1]) : 1;
     request("John", count);
     return EXIT_SUCCESS;
