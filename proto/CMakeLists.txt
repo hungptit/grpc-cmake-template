@@ -2,12 +2,12 @@ find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(Threads)
 
-set(PROTO_FILES address.proto addressbook.proto healthcheck.proto)
+set(PROTO_FILES address.proto addressbook.proto healthcheck.proto helloworld.proto)
 
 # Add Library target with protobuf sources
 add_library(address ${PROTO_FILES})
 target_link_libraries(address PUBLIC protobuf::libprotobuf gRPC::grpc
-                                     gRPC::grpc++)
+  gRPC::grpc++)
 target_include_directories(address PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Generate protobuf and grpc C++ files
