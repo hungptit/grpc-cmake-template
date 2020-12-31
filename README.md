@@ -31,12 +31,29 @@ cmake ./
 make -k
 ```
 
-Or you want to change the C++ compiler and build mode for the sample code
+**Compile all examples using clang++ **
 
 ``` shell
 cmake ./ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
 make -k
 ```
+
+**Compile all examples using the address sanitizer**
+
+``` shell
+cmake ./ -DCMAKE_BUILD_TYPE=Debug -DUSE_SANITIZER=address
+make -k
+```
+
+**Compile all examples using the thread sanitizer**
+
+``` shell
+cmake ./ -DCMAKE_BUILD_TYPE=Debug -DUSE_SANITIZER=thread
+make -k
+```
+
+*Note: There are data race warning if the thread sanitizer is used.*
+
 
 ## Windows ##
 
