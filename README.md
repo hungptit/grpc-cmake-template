@@ -24,14 +24,14 @@ Run below command at the root level of the project to build [grpc](https://githu
 
 ### Build all examples ###
 
-Try below steps if you want to build all examples assuming the [grpc](https://github.com/grpc/grpc) libraries have already installed in the **3p** folder.
+**Compile all examples using default options assuming the [grpc](https://github.com/grpc/grpc) libraries have already installed in the **3p** folder**
 
 ``` shell
 cmake ./
 make -k
 ```
 
-**Compile all examples using clang++ **
+**Compile all examples using clang++**
 
 ``` shell
 cmake ./ -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
