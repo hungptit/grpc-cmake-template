@@ -52,7 +52,7 @@ cmake ./ -DCMAKE_BUILD_TYPE=Debug -DUSE_SANITIZER=thread
 make -k
 ```
 
-*Note: There are data race warning if the thread sanitizer is used.*
+*Note: There are data race warnings if the thread sanitizer is used.*
 
 
 ## Windows ##
