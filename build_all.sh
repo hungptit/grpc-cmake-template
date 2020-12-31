@@ -11,5 +11,6 @@ pushd 3p || exit
 popd || exit
 
 # Build all examples
+rm -f CMakeCache.txt 
 cmake ./
 make -k
