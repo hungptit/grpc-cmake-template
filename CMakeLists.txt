@@ -26,7 +26,7 @@ message("gRPC_DIR: ${gRPC_DIR}")
 set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
-  add_compile_options(/W3 /WX)
+  # add_compile_options(/W3 /WX)
 else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
