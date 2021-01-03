@@ -1,5 +1,5 @@
 find_package(Threads)
-set(SRC_FILES grpc-server greeter_server)
+set(SRC_FILES grpc-server greeter_server keyvalue-server)
 
 foreach(src_file ${SRC_FILES})
   add_executable(${src_file} ${src_file}.cpp)

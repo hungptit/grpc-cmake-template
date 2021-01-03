@@ -23,10 +23,10 @@ message("protobuf_DIR: ${protobuf_DIR}")
 message("gRPC_DIR: ${gRPC_DIR}")
 
 #Configure compiler options
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 if(MSVC)
-  # add_compile_options(/W3 /WX)
+  add_compile_options(/W2 /WX)
 else()
   add_compile_options(-Wall -Wextra -pedantic -Werror -static)
 endif()
