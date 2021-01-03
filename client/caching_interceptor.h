@@ -1,6 +1,7 @@
 /*
  *
  * Copyright 2018 gRPC authors.
+ * Copyright 2021 Hung Dang.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@
  *
  */
 
+#include <iomanip>
 #include <map>
 
 #include <grpcpp/support/client_interceptor.h>
@@ -64,12 +66,12 @@ class CachingInterceptor : public grpc::experimental::Interceptor {
             }
 
             // Check if the key is present in the map
-            auto search = cached_map_.find(requested_key);
-            if (search != cached_map_.end()) {
-                std::cout << "Key " << requested_key << "found in map";
-                response_ = search->second;
+            const auto it = cached_map_.find(requested_key);
+            if (it != cached_map_.end()) {
+                std::cout << "Key " << std::quoted(requested_key) << " found in map.\n";
+                response_ = it->second;
             } else {
-                std::cout << "Key " << requested_key << "not found in cache";
+                std::cout << "Key " << std::quoted(requested_key) << " not found in cache.\n";
                 // Key was not found in the cache, so make a request
                 keyvaluestore::Request req;
                 req.set_key(requested_key);
@@ -77,10 +79,10 @@ class CachingInterceptor : public grpc::experimental::Interceptor {
                 keyvaluestore::Response resp;
                 stream_->Read(&resp);
                 response_ = resp.value();
-                // Insert the pair in the cache for future requests
-                cached_map_.insert({requested_key, response_});
+                cached_map_.emplace(requested_key, response_); // Update the cache.
             }
         }
+
         if (methods->QueryInterceptionHookPoint(grpc::experimental::InterceptionHookPoints::PRE_SEND_CLOSE)) {
             stream_->WritesDone();
         }
@@ -92,6 +94,7 @@ class CachingInterceptor : public grpc::experimental::Interceptor {
             auto *status = methods->GetRecvStatus();
             *status      = grpc::Status::OK;
         }
+
         // One of Hijack or Proceed always needs to be called to make progress.
         if (hijack) {
             // Hijack is called only once when PRE_SEND_INITIAL_METADATA is present in
