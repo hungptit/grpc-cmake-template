@@ -1,13 +1,27 @@
+# Use local build gRPC and protobuf libraries
+set(EXTERNAL_DIR "${ROOT_DIR}/3p")
+if(UNIX AND NOT APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
+elseif(APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib/cmake/protobuf/")
+elseif(MSVC)
+  set(protobuf_DIR "${EXTERNAL_DIR}/cmake/")
+else()
+  message(FATAL_ERROR "This platform is unsupported. CMake will exit.")
+endif()
+set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
+
 find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(Threads)
 
-set(PROTO_FILES address.proto addressbook.proto healthcheck.proto helloworld.proto keyvaluestore.proto)
+set(PROTO_FILES address.proto addressbook.proto healthcheck.proto
+                helloworld.proto keyvaluestore.proto)
 
 # Add Library target with protobuf sources
 add_library(address ${PROTO_FILES})
 target_link_libraries(address PUBLIC protobuf::libprotobuf gRPC::grpc
-  gRPC::grpc++)
+                                     gRPC::grpc++)
 target_include_directories(address PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Generate protobuf and grpc C++ files

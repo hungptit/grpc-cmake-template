@@ -43,7 +43,7 @@ class KeyValueStoreClient {
     void GetValues(const std::vector<std::string> &keys) {
         ClientContext context;
 
-        auto stream = stub_->GetValues(&context);
+        auto    stream = stub_->GetValues(&context);
         Request request;
         for (const auto &key : keys) {
             request.Clear();
