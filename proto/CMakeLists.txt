@@ -7,6 +7,10 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/grpc/grpc
   GIT_TAG v1.35.0)
 set(FETCHCONTENT_QUIET OFF)
+
+set(ABSL_ENABLE_INSTALL OFF)
+set(gRPC_PROTOBUF_PACKAGE_TYPE module)
+set(gRPC_PROTOBUF_PROVIDER module)
 FetchContent_MakeAvailable(grpc)
 
 set(PROTO_FILES address.proto addressbook.proto healthcheck.proto

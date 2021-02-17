@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(grpc-cmake-template LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(FetchContent)
 
@@ -42,9 +43,6 @@ add_subdirectory(server)
 
 # Formating and linting all related files
 file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp)
-message("C++ files: ${SRCS_AND_HDRS}")
-
-# list(FILTER SRCS_AND_HDRS EXCLUDE REGEX "3p/")
 find_program(CLANG_FORMAT NAMES clang-format)
 if(${CLANG_FORMAT} STREQUAL "CLANG_FORMAT-NOTFOUND")
   add_custom_command(
