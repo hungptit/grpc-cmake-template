@@ -1,40 +1,52 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
 project(grpc-cmake-template LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include(3p/src/cmake-scripts/sanitizers.cmake)
+include(FetchContent)
 
+# Add cmake-scripts
+FetchContent_Declare(
+  cmake_scripts
+  GIT_REPOSITORY https://github.com/StableCoder/cmake-scripts.git
+  GIT_TAG main
+  GIT_SHALLOW TRUE)
+
+FetchContent_Populate(cmake_scripts)
+
+set(CMAKE_MODULE_PATH "${cmake_scripts_SOURCE_DIR}")
+include(c++-standards)
+include(code-coverage)
+include(sanitizers)
+include(tools)
+include(dependency-graph)
 
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
-
-#Configure compiler options
+# Configure compiler options
 set(CMAKE_CXX_STANDARD 14)
 
 if(MSVC)
   add_compile_options(/W2 /WX)
 else()
-  add_compile_options(-Wall -Wextra -pedantic -Werror -static)
+  add_compile_options(-Wall -Wextra -static)
 endif()
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
-#Add include folders
+# Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-#Include subfolders
+# Include subfolders
+add_subdirectory(proto)
 add_subdirectory(client)
 add_subdirectory(server)
-add_subdirectory(proto)
 
-#Formating and linting all related files
+# Formating and linting all related files
 file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp)
 message("C++ files: ${SRCS_AND_HDRS}")
 
 # list(FILTER SRCS_AND_HDRS EXCLUDE REGEX "3p/")
 find_program(CLANG_FORMAT NAMES clang-format)
-if (${CLANG_FORMAT} STREQUAL "CLANG_FORMAT-NOTFOUND")
+if(${CLANG_FORMAT} STREQUAL "CLANG_FORMAT-NOTFOUND")
   add_custom_command(
     OUTPUT .fmt_cpp_stamp
     DEPENDS ${SRCS_AND_HDRS}
@@ -81,13 +93,13 @@ if(${SHFMT} STREQUAL "SHFMT-NOTFOUND")
     COMMENT "Could not find shfmt. Skip formatting Bash scripts."
     VERBATIM)
 else()
-    add_custom_command(
-      OUTPUT .fmt_bash_stamp
-      DEPENDS ${SH_SRCS}
-      COMMAND ${SHFMT} -i 2 -ci -w ${SH_SRCS}
-      COMMAND touch .fmt_bash_stamp
-      COMMENT "Format Bash scripts with shfmt."
-      VERBATIM)
+  add_custom_command(
+    OUTPUT .fmt_bash_stamp
+    DEPENDS ${SH_SRCS}
+    COMMAND ${SHFMT} -i 2 -ci -w ${SH_SRCS}
+    COMMAND touch .fmt_bash_stamp
+    COMMENT "Format Bash scripts with shfmt."
+    VERBATIM)
 endif()
 
 add_custom_target(
