@@ -4,7 +4,22 @@ project(grpc-cmake-template LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-include(3p/src/cmake-scripts/sanitizers.cmake)
+# Add cmake-scripts
+include(FetchContent)
+FetchContent_Declare(
+  cmake_scripts
+  GIT_REPOSITORY https://github.com/StableCoder/cmake-scripts.git
+  GIT_TAG main
+  GIT_SHALLOW TRUE)
+
+FetchContent_Populate(cmake_scripts)
+
+set(CMAKE_MODULE_PATH "${FETCHCONTENT_BASE_DIR}/cmake_scripts-src/;")
+include(c++-standards)
+include(code-coverage)
+include(sanitizers)
+include(tools)
+include(dependency-graph)
 
 # Configure compiler options
 set(CMAKE_CXX_STANDARD 14)
