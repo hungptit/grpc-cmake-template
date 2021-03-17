@@ -20,6 +20,7 @@ cd build
 cmake -G "Visual Studio 14 2015" -A x64 $grpc_path -DABSL_ENABLE_INSTALL=OFF -DCMAKE_INSTALL_PREFIX="$third_party_path" -DgRPC_PROTOBUF_PACKAGE_TYPE=MODULE -DgRPC_PROTOBUF_PROVIDER=module
 cmake --build . --config $config -- /maxcpucount
 cmake --build . --config $config --target install
+rm build                        # Cleanup the build directory.
 
 # Build examples
 cd $root_path
