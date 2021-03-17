@@ -1,17 +1,18 @@
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(EXTERNAL_DIR "${PROJECT_SOURCE_DIR}/3p")
+if(UNIX AND NOT APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
+elseif(APPLE)
+  set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
+elseif(MSVC)
+  set(protobuf_DIR "${EXTERNAL_DIR}/cmake/")
+else()
+  message(FATAL_ERROR "This platform is unsupported. CMake will exit.")
+endif()
+set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
+
+find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
+find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
 find_package(Threads)
-
-# gRPC
-FetchContent_Declare(
-  grpc
-  GIT_REPOSITORY https://github.com/grpc/grpc
-  GIT_TAG v1.35.0)
-set(FETCHCONTENT_QUIET OFF)
-
-set(ABSL_ENABLE_INSTALL OFF)
-set(gRPC_PROTOBUF_PACKAGE_TYPE module)
-set(gRPC_PROTOBUF_PROVIDER module)
-FetchContent_MakeAvailable(grpc)
 
 set(PROTO_FILES address.proto addressbook.proto healthcheck.proto
   helloworld.proto keyvaluestore.proto)
@@ -29,7 +30,7 @@ protobuf_generate(TARGET
   "protoc-gen-grpc=${grpc_cpp_plugin_location}")
 
 # Generate protobuf and grpc Python files
-get_target_property(grpc_python_plugin_location gRPC::grpc_python_plugin
+get_target_property(grpc_python_plugin_location grpc::grpc_python_plugin
   LOCATION)
 protobuf_generate(TARGET address LANGUAGE python)
 protobuf_generate(

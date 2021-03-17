@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(grpc-cmake-template LANGUAGES CXX)
+project(build-grpc LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
