@@ -15,6 +15,7 @@ git submodule update --init --recursive
 
 # Build grpc
 cd $root_path
+rm -rf build
 mkdir build
 cd build
 cmake -G "Visual Studio 14 2015" -A x64 $grpc_path -DABSL_ENABLE_INSTALL=OFF -DCMAKE_INSTALL_PREFIX="$third_party_path" -DgRPC_PROTOBUF_PACKAGE_TYPE=module -DgRPC_PROTOBUF_PROVIDER=module
