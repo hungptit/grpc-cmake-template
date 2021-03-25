@@ -15,6 +15,7 @@ git submodule update --init --recursive
 
 # Build grpc
 cd $root_path
+Remove-
 rm -rf build
 mkdir build
 cd build
