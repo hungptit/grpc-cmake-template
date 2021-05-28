@@ -4,14 +4,17 @@ param (
 
 $root_path = Get-Location
 $third_party_path = "$root_path\3p"
-$grpc_path = "$third_party_path\src\grpc"
+$grpc_path = "$third_party_path\3p\_deps\grpc-src\"
+vs_version = "Visual Studio 14 2015"
 
 Write-Output "root_path: $root_path"
 Write-Output "third_party_path: $third_party_path"
 Write-Output "grpc_path: $grpc_path"
+Write-Output "vs_version: $vs_version"
 
-# Init grpc and its submodules
-git submodule update --init --recursive
+# Get grpc source
+cd $third_party_path
+cmake -G "Visual Studio 14 2015" -A x64 .
 
 # Build grpc
 cd $root_path

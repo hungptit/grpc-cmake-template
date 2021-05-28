@@ -37,7 +37,7 @@ add_custom_command(
   DEPENDS ${PROTO_FILES}
   COMMENT "Generate C++ header and source files.")
 
-# Create the vizdata library.
+# Create the library.
 set(LIBNAME "address")
 add_library(${LIBNAME} STATIC ${SOURCE_FILES})
 target_include_directories(${LIBNAME} PRIVATE "${CODEGEN_DIR}")

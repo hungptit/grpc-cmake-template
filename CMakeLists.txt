@@ -43,7 +43,8 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Include subfolders
 add_subdirectory(proto)
-# add_subdirectory(client) add_subdirectory(server)
+add_subdirectory(client)
+add_subdirectory(server)
 
 # Formating and linting all related files
 file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp)
