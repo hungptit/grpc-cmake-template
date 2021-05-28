@@ -4,7 +4,7 @@ This repository has a template for a gRPC C++ CMake projects.
 
 # Build instruction #
 
-**Note: This instruction assumes there is a recent C++ toolchain in the build machine.**
+**Note: This instruction assumes there is a LLVM toolchain and ccache is available in the build machine.**
 
 ## macOS and Linux ##
 
