@@ -4,42 +4,40 @@ project(grpc-cmake-template LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-include(FetchContent)
-
 # Add cmake-scripts
+include(FetchContent)
 FetchContent_Declare(
   cmake_scripts
   GIT_REPOSITORY https://github.com/StableCoder/cmake-scripts.git
   GIT_TAG main
   GIT_SHALLOW TRUE)
-
 FetchContent_Populate(cmake_scripts)
-
 set(CMAKE_MODULE_PATH "${cmake_scripts_SOURCE_DIR}")
-include(c++-standards)
-include(code-coverage)
-include(sanitizers)
-include(tools)
-include(dependency-graph)
 
-set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+include(c++-standards)
+
+if(NOT MSVC)
+  include(code-coverage)
+  include(sanitizers)
+  include(tools)
+  include(dependency-graph)
+endif()
 
 # Configure compiler options
-set(CMAKE_CXX_STANDARD 14)
-
-if(MSVC)
-  add_compile_options(/W2 /WX)
-else()
-  add_compile_options(-Wall -Wextra -static)
-endif()
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ENABLE_ALL_WARNINGS ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(POSITION_INDEPENDENT_CODE OFF)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Include subfolders
 add_subdirectory(proto)
-add_subdirectory(client)
-add_subdirectory(server)
+# add_subdirectory(client) add_subdirectory(server)
 
 # Formating and linting all related files
 file(GLOB_RECURSE SRCS_AND_HDRS client/*.cpp client/*.h server/*.cpp)
@@ -48,7 +46,7 @@ if(${CLANG_FORMAT} STREQUAL "CLANG_FORMAT-NOTFOUND")
   add_custom_command(
     OUTPUT .fmt_cpp_stamp
     DEPENDS ${SRCS_AND_HDRS}
-    COMMAND touch .fmt_cpp_stamp
+    COMMAND echo "Could not find clang-format. Skip formating C++ file"
     COMMENT "Could not find clang-format. Skip formating C++ files."
     VERBATIM)
 else()
@@ -68,7 +66,7 @@ if(${CMAKE_FORMAT} STREQUAL "CMAKE_FORMAT-NOTFOUND")
   add_custom_command(
     OUTPUT .fmt_cmake_stamp
     DEPENDS ${CMAKE_FILES}
-    COMMAND touch .fmt_cmake_stamp
+    COMMAND echo "Could not find cmake-format. Skip formatting CMake files."
     COMMENT "Could not find cmake-format. Skip formatting CMake files."
     VERBATIM)
 else()
@@ -81,13 +79,13 @@ else()
     VERBATIM)
 endif()
 
-file(GLOB SH_SRCS 3p/*.sh)
+file(GLOB SH_SRCS *.sh)
 find_program(SHFMT NAMES shfmt)
 if(${SHFMT} STREQUAL "SHFMT-NOTFOUND")
   add_custom_command(
     OUTPUT .fmt_bash_stamp
     DEPENDS ${SH_SRCS}
-    COMMAND touch .fmt_bash_stamp
+    COMMAND echo "Could not find shfmt. Skip formatting Bash scripts."
     COMMENT "Could not find shfmt. Skip formatting Bash scripts."
     VERBATIM)
 else()
@@ -110,7 +108,7 @@ if(${SHELLCHECK} STREQUAL "SHELLCHECK-NOTFOUND")
   add_custom_command(
     OUTPUT .lint_shellcheck_stamp
     DEPENDS ${SH_SRCS}
-    COMMAND touch .lint_shellcheck_stamp
+    COMMAND "Skip linting Bash scripts."
     COMMENT "Skip linting Bash scripts."
     VERBATIM)
 else()
@@ -131,5 +129,5 @@ add_custom_command(
 
 add_custom_target(
   lint ALL
-  DEPENDS .lint_shellcheck_stamp
+  DEPENDS .lint_shellcheck_stamp .lint_cmake_stamp
   COMMENT "Lint Bash and CMake files.")
