@@ -1,19 +1,25 @@
 cmake_minimum_required(VERSION 3.15)
 project(grpc-cmake-template LANGUAGES CXX)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ENABLE_ALL_WARNINGS ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
+set(POSITION_INDEPENDENT_CODE OFF)
 
 # Add cmake-scripts
 include(FetchContent)
 FetchContent_Declare(
   cmake_scripts
   GIT_REPOSITORY https://github.com/StableCoder/cmake-scripts.git
-  GIT_TAG main
-  GIT_SHALLOW TRUE)
+  GIT_TAG main)
 FetchContent_Populate(cmake_scripts)
-set(CMAKE_MODULE_PATH "${cmake_scripts_SOURCE_DIR}")
 
+set(CMAKE_MODULE_PATH "${cmake_scripts_SOURCE_DIR}")
 include(c++-standards)
 
 if(NOT MSVC)

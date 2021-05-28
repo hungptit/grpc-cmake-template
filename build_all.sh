@@ -1,5 +1,6 @@
 #!/bin/bash
 config=${1:-"Release"}
+echo "Build config: $config"
 
 osType=$(uname)
 case "$osType" in

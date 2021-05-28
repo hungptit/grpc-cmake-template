@@ -62,13 +62,16 @@ namespace utils {
             auto const status = stub->Check(&context, query, &response);
             if (status.ok()) {
                 if (response.status() == grpc::health::v1::HealthCheckResponse_ServingStatus_SERVING) {
-                    return {status.error_code(), response.status()};
+                    results.errcode = status.error_code();
+                    results.status  = response.status();
+                    return results;
                 }
             }
 
             const auto errcode = status.error_code();
             std::cout << utils::errcode2string(errcode) << ": " << status.error_message() << "\n";
-            results = {errcode, response.status()};
+            results.errcode = status.error_code();
+            results.status  = response.status();
         }
 
         return results;
