@@ -2,16 +2,22 @@
 config=${1:-"Release"}
 echo "Build config: $config"
 
-# Update the grpc submodule
-git submodule update --init --recursive
+osType=$(uname)
+case "$osType" in
+    "Darwin")
+        {
+            number_of_cores=$(sysctl -n hw.ncpu);
+        } ;;
+    "Linux")
+        {
+            number_of_cores=$(grep -c ^processor /proc/cpuinfo)
+        } ;;
+    *)
+        {
+            echo "Unsupported OS, exiting"
+            exit
+        } ;;
+esac
 
-# Compile and install gRPC
-# We need to disable ABSL installation because of this issue https://github.com/grpc/grpc/issues/24976
-pushd 3p || exit
-./build_using_cmake.sh grpc -DCMAKE_BUILD_TYPE="$config"  -DABSL_ENABLE_INSTALL=OFF -DgRPC_PROTOBUF_PACKAGE_TYPE=module -DgRPC_PROTOBUF_PROVIDER=module
-popd || exit
-
-# Build all examples
-rm -f CMakeCache.txt 
-cmake ./ -DCMAKE_BUILD_TYPE="$config"
-make -j3
+cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++
+make "-j$number_of_cores" > /dev/null

@@ -1,3 +1,9 @@
+if(MSVC)
+  add_compile_options(/W2 /WX)
+else()
+  add_compile_options(-Wall -Wextra -static)
+endif()
+
 find_package(Threads)
 set(SRC_FILES grpc-server greeter_server keyvalue-server)
 

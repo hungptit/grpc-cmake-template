@@ -24,7 +24,7 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 
-#include "proto/helloworld.grpc.pb.h"
+#include "proto/codegen/helloworld.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;

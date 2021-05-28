@@ -1,53 +1,44 @@
-# Use local build gRPC and protobuf libraries
-set(EXTERNAL_DIR "${ROOT_DIR}/3p")
-if(UNIX AND NOT APPLE)
-  set(protobuf_DIR "${EXTERNAL_DIR}/lib64/cmake/protobuf/")
-elseif(APPLE)
-  set(protobuf_DIR "${EXTERNAL_DIR}/lib/cmake/protobuf/")
-elseif(MSVC)
-  set(protobuf_DIR "${EXTERNAL_DIR}/cmake/")
-else()
-  message(FATAL_ERROR "This platform is unsupported. CMake will exit.")
+if(MSVC)
+  add_definitions(-D_WIN32_WINNT=0x600)
 endif()
-set(gRPC_DIR "${EXTERNAL_DIR}/lib/cmake/grpc")
 
-find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH)
-find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH)
-find_package(Threads)
+find_package(Threads REQUIRED)
 
-set(PROTO_FILES address.proto addressbook.proto healthcheck.proto
-                helloworld.proto keyvaluestore.proto)
-
-# Add Library target with protobuf sources
-add_library(address ${PROTO_FILES})
-target_link_libraries(address PUBLIC protobuf::libprotobuf gRPC::grpc
-                                     gRPC::grpc++)
-target_include_directories(address PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-# Generate protobuf and grpc C++ files
-get_target_property(grpc_cpp_plugin_location gRPC::grpc_cpp_plugin LOCATION)
-protobuf_generate(TARGET address LANGUAGE cpp)
-protobuf_generate(
-  TARGET
-  address
-  LANGUAGE
+include(FetchContent)
+FetchContent_Declare(
   grpc
-  GENERATE_EXTENSIONS
-  .grpc.pb.h
-  .grpc.pb.cc
-  PLUGIN
-  "protoc-gen-grpc=${grpc_cpp_plugin_location}")
+  GIT_REPOSITORY https://github.com/grpc/grpc.git
+  GIT_TAG master)
+FetchContent_MakeAvailable(grpc)
 
-# Generate protobuf and grpc Python files
-get_target_property(grpc_python_plugin_location gRPC::grpc_python_plugin
-                    LOCATION)
-protobuf_generate(TARGET address LANGUAGE python)
-protobuf_generate(
-  TARGET
-  address
-  LANGUAGE
-  grpc
-  GENERATE_EXTENSIONS
-  .py
-  PLUGIN
-  "protoc-gen-grpc=${grpc_python_plugin_location}")
+set(PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CODEGEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/codegen")
+set(SOURCE_FILES)
+set(HEADER_FILES)
+set(PROTO_FILES)
+set(TARGETS address addressbook healthcheck helloworld keyvaluestore)
+
+foreach(target ${TARGETS})
+  set(BASE_PATH "${CODEGEN_DIR}/${target}")
+  list(APPEND SOURCE_FILES "${BASE_PATH}.pb.cc" "${BASE_PATH}.grpc.pb.cc")
+  list(APPEND HEADER_FILES "${BASE_PATH}.pb.h" "${BASE_PATH}.grpc.pb.h")
+  list(APPEND PROTO_FILES "${PROTO_DIR}/${target}.proto")
+endforeach()
+
+file(MAKE_DIRECTORY ${CODEGEN_DIR})
+
+# Generate code for given proto files.
+add_custom_command(
+  OUTPUT ${SOURCE_FILES} ${HEADER_FILES}
+  COMMAND
+    $<TARGET_FILE:protoc> ARGS --grpc_out "${CODEGEN_DIR}" --cpp_out
+    "${CODEGEN_DIR}" --proto_path ${PROTO_DIR}
+    --plugin=protoc-gen-grpc="$<TARGET_FILE:grpc_cpp_plugin>" ${PROTO_FILES}
+  DEPENDS ${PROTO_FILES}
+  COMMENT "Generate C++ header and source files.")
+
+# Create the library.
+set(LIBNAME "address")
+add_library(${LIBNAME} STATIC ${SOURCE_FILES})
+target_include_directories(${LIBNAME} PRIVATE "${CODEGEN_DIR}")
+target_link_libraries(${LIBNAME} PUBLIC grpc grpc++ libprotobuf)

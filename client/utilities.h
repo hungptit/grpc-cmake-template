@@ -1,7 +1,8 @@
 #pragma once
 
-#include "healthcheck.grpc.pb.h"
-#include "healthcheck.pb.h"
+#include "proto/codegen/healthcheck.grpc.pb.h"
+#include "proto/codegen/healthcheck.pb.h"
+
 #include <grpcpp/channel.h>
 #include <grpcpp/create_channel.h>
 #include <grpcpp/impl/codegen/status_code_enum.h>
