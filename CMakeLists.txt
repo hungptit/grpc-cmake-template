@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 project(grpc-cmake-template LANGUAGES CXX)
 
-set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+# Use ccache to speed up our build
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -28,15 +32,6 @@ if(NOT MSVC)
   include(tools)
   include(dependency-graph)
 endif()
-
-# Configure compiler options
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(ENABLE_ALL_WARNINGS ON)
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-set(POSITION_INDEPENDENT_CODE OFF)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -115,7 +110,7 @@ if(${SHELLCHECK} STREQUAL "SHELLCHECK-NOTFOUND")
   add_custom_command(
     OUTPUT .lint_shellcheck_stamp
     DEPENDS ${SH_SRCS}
-    COMMAND "Skip linting Bash scripts."
+    COMMAND echo "Skip linting Bash scripts."
     COMMENT "Skip linting Bash scripts."
     VERBATIM)
 else()
@@ -127,12 +122,22 @@ else()
     COMMENT "Lint Bash files with shellcheck.")
 endif()
 
-add_custom_command(
-  OUTPUT .lint_cmake_stamp
-  DEPENDS ${CMAKE_FILES}
-  COMMAND cmake-lint ${CMAKE_FILES}
-  COMMAND touch .lint_cmake_stamp
-  COMMENT "Lint CMake files with cmake-lint.")
+find_program(CMAKE_LINT NAMES cmake-lint)
+if(${CMAKE_LINT} STREQUAL "CMAKE_LINT-NOTFOUND")
+  add_custom_command(
+    OUTPUT .lint_cmake_stamp
+    DEPENDS ${CMAKE_FILES}
+    COMMAND echo "Could not find cmake-lint. Skip linting CMake files."
+    COMMAND touch .lint_cmake_stamp
+    COMMENT "Lint CMake files with cmake-lint.")  
+else()
+  add_custom_command(
+    OUTPUT .lint_cmake_stamp
+    DEPENDS ${CMAKE_FILES}
+    COMMAND ${CMAKE_LINT} ${CMAKE_FILES}
+    COMMAND touch .lint_cmake_stamp
+    COMMENT "Lint CMake files with cmake-lint.")
+endif()
 
 add_custom_target(
   lint ALL

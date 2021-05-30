@@ -4,4 +4,4 @@ param (
 
 # Build all examples
 cmake -G "Visual Studio 16 2019"  -A x64 .
-cmake --build . --config $config -- /maxcpucount
+cmake --build . --config "$config" -- /maxcpucount
