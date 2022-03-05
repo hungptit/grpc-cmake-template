@@ -10,9 +10,8 @@ find_package(protobuf CONFIG REQUIRED NO_DEFAULT_PATH PATHS
 find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH PATHS
              "${PROJECT_SOURCE_DIR}/.local/lib/cmake")
 
-# Protobuf/Grpc source files
-set(PROTO_FILES address.proto addressbook.proto healthcheck.proto
-                helloworld.proto keyvaluestore.proto)
+# Find all proto files in the current folder.
+file(GLOB PROTO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.proto)
 
 # Add Library target with protobuf sources
 add_library(address ${PROTO_FILES})
