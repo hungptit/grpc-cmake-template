@@ -14,7 +14,7 @@ find_package(gRPC CONFIG REQUIRED NO_DEFAULT_PATH PATHS
 file(GLOB PROTO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.proto)
 
 # Add Library target with protobuf sources
-add_library(address ${PROTO_FILES})
+add_library(address STATIC ${PROTO_FILES})
 target_link_libraries(address PUBLIC protobuf::libprotobuf gRPC::grpc
                                      gRPC::grpc++)
 target_include_directories(address PUBLIC ${CMAKE_CURRENT_BINARY_DIR})

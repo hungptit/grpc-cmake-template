@@ -87,7 +87,7 @@ else()
     VERBATIM)
 endif()
 
-file(GLOB SH_SRCS *.sh)
+file(GLOB SH_SRCS scripts/*.sh *.sh)
 find_program(SHFMT NAMES shfmt)
 if(${SHFMT} STREQUAL "SHFMT-NOTFOUND")
   add_custom_command(

@@ -23,10 +23,13 @@ case "$osType" in
 esac
 
 # Download required projects
-cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++
+cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++ >/dev/null
 
 # Build gRPC
-./scripts/build_grpc.sh
+./scripts/build_grpc.sh >/dev/null
+
+# Configure the project
+cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++
 
 # Build all examples
 make "-j$number_of_cores" >/dev/null
