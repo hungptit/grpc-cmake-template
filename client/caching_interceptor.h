@@ -1,8 +1,8 @@
 #include <iomanip>
 #include <map>
 
+#include "proto/keyvaluestore.grpc.pb.h"
 #include <grpcpp/support/client_interceptor.h>
-#include "proto/codegen/keyvaluestore.grpc.pb.h"
 
 // This is a naive implementation of a cache. A new cache is for each call. For
 // each new key request, the key is first searched in the map and if found, the
@@ -34,7 +34,7 @@ class CachingInterceptor : public grpc::experimental::Interceptor {
                 // The non-serialized form would not be available in certain scenarios,
                 // so add a fallback
                 keyvaluestore::Request req_msg;
-                auto *                 buffer        = methods->GetSerializedSendMessage();
+                auto                  *buffer        = methods->GetSerializedSendMessage();
                 auto                   copied_buffer = *buffer;
                 GPR_ASSERT(
                     grpc::SerializationTraits<keyvaluestore::Request>::Deserialize(&copied_buffer, &req_msg).ok());

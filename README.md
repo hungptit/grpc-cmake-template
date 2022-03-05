@@ -21,3 +21,7 @@ Go to the root level of the template folder then execute below commands to build
 ```
 
 # FAQs #
+
+# Known issues #
+
+* grpc_cpp_plugin does not work with the shared library build.

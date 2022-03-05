@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 project(grpc-cmake-template LANGUAGES CXX)
 
-# Use ccache to speed up our build
+# Enable ccache
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
 set(CMAKE_CXX_STANDARD 14)
@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(ENABLE_ALL_WARNINGS ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(POSITION_INDEPENDENT_CODE OFF)
 
 # Add cmake-scripts
@@ -32,6 +32,12 @@ if(NOT MSVC)
   include(tools)
   include(dependency-graph)
 endif()
+
+# Get gRPC libraries
+FetchContent_Declare(
+  grpc
+  GIT_REPOSITORY https://github.com/grpc/grpc
+  GIT_TAG master)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
@@ -81,7 +87,7 @@ else()
     VERBATIM)
 endif()
 
-file(GLOB SH_SRCS *.sh)
+file(GLOB SH_SRCS scripts/*.sh *.sh)
 find_program(SHFMT NAMES shfmt)
 if(${SHFMT} STREQUAL "SHFMT-NOTFOUND")
   add_custom_command(
@@ -105,6 +111,7 @@ add_custom_target(
   DEPENDS .fmt_bash_stamp .fmt_cpp_stamp .fmt_cmake_stamp
   COMMENT "Format Bash, C++, and CMake files.")
 
+# Lint Bash scripts
 find_program(SHELLCHECK NAMES shellcheck)
 if(${SHELLCHECK} STREQUAL "SHELLCHECK-NOTFOUND")
   add_custom_command(
@@ -122,21 +129,23 @@ else()
     COMMENT "Lint Bash files with shellcheck.")
 endif()
 
-find_program(CMAKE_LINT NAMES cmake-lint)
+# Lint all CMake files
+find_program(CMAKE_LINT NAMES cmake-format)
 if(${CMAKE_LINT} STREQUAL "CMAKE_LINT-NOTFOUND")
   add_custom_command(
     OUTPUT .lint_cmake_stamp
     DEPENDS ${CMAKE_FILES}
     COMMAND echo "Could not find cmake-lint. Skip linting CMake files."
-    COMMAND touch .lint_cmake_stamp
-    COMMENT "Lint CMake files with cmake-lint.")  
+    COMMENT "Could not find cmake-lint. Skip linting CMake files."
+    VERBATIM)
 else()
   add_custom_command(
     OUTPUT .lint_cmake_stamp
     DEPENDS ${CMAKE_FILES}
-    COMMAND ${CMAKE_LINT} ${CMAKE_FILES}
+    COMMAND cmake-lint ${CMAKE_FILES}
     COMMAND touch .lint_cmake_stamp
-    COMMENT "Lint CMake files with cmake-lint.")
+    COMMENT "Lint CMake files with cmake-format."
+    VERBATIM)
 endif()
 
 add_custom_target(
