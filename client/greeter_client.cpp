@@ -4,7 +4,7 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include "proto/codegen/helloworld.grpc.pb.h"
+#include "proto/helloworld.grpc.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;

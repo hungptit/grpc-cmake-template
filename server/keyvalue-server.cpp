@@ -3,10 +3,8 @@
 #include <map>
 #include <memory>
 #include <string>
-
 #include "grpcpp/grpcpp.h"
-
-#include "proto/codegen/keyvaluestore.grpc.pb.h"
+#include "proto/keyvaluestore.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;

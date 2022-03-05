@@ -1,5 +1,5 @@
-#include "proto/codegen/address.pb.h"
-#include "proto/codegen/addressbook.grpc.pb.h"
+#include "proto/address.pb.h"
+#include "proto/addressbook.grpc.pb.h"
 
 #include "grpc/grpc.h"
 #include "grpcpp/server_builder.h"

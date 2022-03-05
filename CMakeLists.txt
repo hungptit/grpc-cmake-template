@@ -107,12 +107,13 @@ add_custom_target(
   DEPENDS .fmt_bash_stamp .fmt_cpp_stamp .fmt_cmake_stamp
   COMMENT "Format Bash, C++, and CMake files.")
 
+# Lint Bash scripts
 find_program(SHELLCHECK NAMES shellcheck)
 if(${SHELLCHECK} STREQUAL "SHELLCHECK-NOTFOUND")
   add_custom_command(
     OUTPUT .lint_shellcheck_stamp
     DEPENDS ${SH_SRCS}
-    COMMAND "Skip linting Bash scripts."
+    COMMAND echo "Skip linting Bash scripts."
     COMMENT "Skip linting Bash scripts."
     VERBATIM)
 else()
@@ -124,12 +125,24 @@ else()
     COMMENT "Lint Bash files with shellcheck.")
 endif()
 
-add_custom_command(
-  OUTPUT .lint_cmake_stamp
-  DEPENDS ${CMAKE_FILES}
-  COMMAND cmake-lint ${CMAKE_FILES}
-  COMMAND touch .lint_cmake_stamp
-  COMMENT "Lint CMake files with cmake-lint.")
+# Lint all CMake files
+find_program(CMAKE_LINT NAMES cmake-format)
+if(${CMAKE_LINT} STREQUAL "CMAKE_LINT-NOTFOUND")
+  add_custom_command(
+    OUTPUT .lint_cmake_stamp
+    DEPENDS ${CMAKE_FILES}
+    COMMAND echo "Could not find cmake-lint. Skip linting CMake files."
+    COMMENT "Could not find cmake-lint. Skip linting CMake files."
+    VERBATIM)
+else()
+  add_custom_command(
+    OUTPUT .lint_cmake_stamp
+    DEPENDS ${CMAKE_FILES}
+    COMMAND cmake-lint ${CMAKE_FILES}
+    COMMAND touch .lint_cmake_stamp
+    COMMENT "Lint CMake files with cmake-format."
+    VERBATIM)
+endif()
 
 add_custom_target(
   lint ALL

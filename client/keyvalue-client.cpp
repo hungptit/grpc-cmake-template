@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "grpcpp/grpcpp.h"
 #include "caching_interceptor.h"
-#include "proto/codegen/keyvaluestore.grpc.pb.h"
+#include "grpcpp/grpcpp.h"
+#include "proto/keyvaluestore.grpc.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;

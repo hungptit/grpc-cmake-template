@@ -1,6 +1,6 @@
 #include "client/utilities.h"
-#include "proto/codegen/healthcheck.grpc.pb.h"
-#include "proto/codegen/healthcheck.pb.h"
+#include "proto/healthcheck.grpc.pb.h"
+#include "proto/healthcheck.pb.h"
 
 #include <cstdlib>
 #include <grpc/grpc.h>
