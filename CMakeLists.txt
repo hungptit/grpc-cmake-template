@@ -29,14 +29,11 @@ if(NOT MSVC)
   include(dependency-graph)
 endif()
 
-# Configure compiler options
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(ENABLE_ALL_WARNINGS ON)
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-set(POSITION_INDEPENDENT_CODE OFF)
+# Get gRPC libraries
+FetchContent_Declare(
+  grpc
+  GIT_REPOSITORY https://github.com/grpc/grpc
+  GIT_TAG master)
 
 # Add include folders
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")

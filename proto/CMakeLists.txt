@@ -3,13 +3,9 @@ if(MSVC)
 endif()
 
 find_package(Threads REQUIRED)
-
-include(FetchContent)
-FetchContent_Declare(
-  grpc
-  GIT_REPOSITORY https://github.com/grpc/grpc.git
-  GIT_TAG master)
-FetchContent_MakeAvailable(grpc)
+find_package(absl REQUIRED NO_DEFAULT_PATH PATHS "${PROJECT_SOURCE_DIR}/.local/lib64/cmake")
+find_package(protobuf REQUIRED NO_DEFAULT_PATH PATHS "${PROJECT_SOURCE_DIR}/.local/lib64/cmake")
+find_package(gRPC REQUIRED NO_DEFAULT_PATH PATHS "${PROJECT_SOURCE_DIR}/.local/lib/cmake")
 
 set(PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(CODEGEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/codegen")

@@ -19,5 +19,11 @@ case "$osType" in
         } ;;
 esac
 
+# Download required projects
 cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++
+
+# Build gRPC
+./scripts/build_grpc.sh
+
+# Build all examples
 make "-j$number_of_cores" > /dev/null
