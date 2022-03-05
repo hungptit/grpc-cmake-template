@@ -36,7 +36,7 @@ esac
 # Build grpc libraries
 set -x
 pushd "$build_dir" || exit
-cmake "$src_dir" -DCMAKE_BUILD_TYPE="$config" -DCMAKE_INSTALL_PREFIX="$dst_dir" -DgRPC_PROTOBUF_PACKAGE_TYPE="module" -Dprotobuf_BUILD_LIBPROTOC=ON -DABSL_PROPAGATE_CXX_STD=ON -DBUILD_SHARED_LIBS=OFF
+cmake "$src_dir" -DCMAKE_BUILD_TYPE="$config" -DCMAKE_INSTALL_PREFIX="$dst_dir" -DgRPC_PROTOBUF_PACKAGE_TYPE="module" -Dprotobuf_BUILD_LIBPROTOC=ON -DABSL_PROPAGATE_CXX_STD=ON -DBUILD_SHARED_LIBS=OFF -Dprotobuf_BUILD_SHARED_LIBS=OFF
 make -j"$number_of_cores"
 make install
 popd || exit
