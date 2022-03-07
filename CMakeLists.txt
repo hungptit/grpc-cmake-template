@@ -81,7 +81,7 @@ else()
   add_custom_command(
     OUTPUT .fmt_cmake_stamp
     DEPENDS ${CMAKE_FILES}
-    COMMAND cmake-format -i ${CMAKE_FILES}
+    COMMAND ${CMAKE_FORMAT} -i ${CMAKE_FILES}
     COMMAND touch .fmt_cmake_stamp
     COMMENT "Format CMake files with cmake-format."
     VERBATIM)
@@ -130,7 +130,7 @@ else()
 endif()
 
 # Lint all CMake files
-find_program(CMAKE_LINT NAMES cmake-format)
+find_program(CMAKE_LINT NAMES cmake-lint)
 if(${CMAKE_LINT} STREQUAL "CMAKE_LINT-NOTFOUND")
   add_custom_command(
     OUTPUT .lint_cmake_stamp
@@ -142,7 +142,7 @@ else()
   add_custom_command(
     OUTPUT .lint_cmake_stamp
     DEPENDS ${CMAKE_FILES}
-    COMMAND cmake-lint ${CMAKE_FILES}
+    COMMAND ${CMAKE_LINT} -c .cmake-lint ${CMAKE_FILES}
     COMMAND touch .lint_cmake_stamp
     COMMENT "Lint CMake files with cmake-format."
     VERBATIM)
