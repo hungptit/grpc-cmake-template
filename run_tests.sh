@@ -1,5 +1,6 @@
 #!/bin/bash
-./server/grpc-server &
-./client/grpc-client 10 &
-./client/health-check ""
+./examples/server/grpc-server &
+sleep 1
+./examples/client/grpc-client 10 &
+./examples/client/health-check ""
 pkill grpc-server
