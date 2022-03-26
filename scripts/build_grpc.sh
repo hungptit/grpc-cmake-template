@@ -3,14 +3,13 @@ config=${1-"Release"}
 root_dir="$PWD"
 
 local_dir="$PWD/.local"
-rm -rf "$local_dir"
 mkdir -p "$local_dir"
 
 src_dir="$root_dir/_deps/grpc-src"
 build_dir="$local_dir/build"
 mkdir -p "$build_dir"
 
-dst_dir="$root_dir/.local"
+dst_dir="$root_dir/.local/grpc/$config"
 
 # Get the number of cpu cores.
 osType=$(uname)

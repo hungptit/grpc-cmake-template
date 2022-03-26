@@ -1,35 +1,14 @@
-#!/bin/bash
-config=${1:-"Release"}
-echo "Build config: $config"
-
-osType=$(uname)
-case "$osType" in
-  "Darwin")
-    {
-      number_of_cores=$(sysctl -n hw.ncpu)
-    }
-    ;;
-  "Linux")
-    {
-      number_of_cores=$(grep -c ^processor /proc/cpuinfo)
-    }
-    ;;
-  *)
-    {
-      echo "Unsupported OS, exiting"
-      exit
-    }
-    ;;
-esac
-
+#!/bin/bash -ex
 # Download required projects
-cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++ >/dev/null
+cmake . >/dev/null
+
+# Format and lint source files
+make format
+make lint
 
 # Build gRPC
-./scripts/build_grpc.sh >/dev/null
+local_dir="$PWD/.local"
+rm -rf "$local_dir"
 
-# Configure the project
-cmake . -DCMAKE_BUILD_TYPE="$config" -DCMAKE_CXX_COMPILER=clang++
-
-# Build all examples
-make "-j$number_of_cores" >/dev/null
+./scripts/build_grpc.sh Release >/dev/null
+./scripts/build_grpc.sh Debug >/dev/null
